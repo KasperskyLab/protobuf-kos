@@ -118,7 +118,7 @@ class CallOnceInitializedMutex {
 // mutexes.
 class GOOGLE_PROTOBUF_CAPABILITY("mutex") PROTOBUF_EXPORT WrappedMutex {
  public:
-#if defined(__QNX__)
+#if defined(__QNX__) || defined(__KOS__)
   constexpr WrappedMutex() = default;
 #else
   constexpr WrappedMutex() {}
