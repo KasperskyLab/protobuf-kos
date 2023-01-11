@@ -1,12 +1,10 @@
-Protocol Buffers - Google's data interchange format
-===================================================
+# Protocol Buffers adaptation for KasperskyOS - Google's data interchange format
 
-Copyright 2008 Google Inc.
+This is a fork of [Protocol Buffers](https://github.com/protocolbuffers/protobuf) project adapted to be used with KasperskyOS. For more information about the target OS, please refer to [KaspeksyOS Community Edition](https://support.kaspersky.com/help/KCE/1.1/en-US/community_edition.htm).
 
-https://developers.google.com/protocol-buffers/
+For general information on using Protocol Buffers, its features and so on, please see the [Protocol Buffers website](https://developers.google.com/protocol-buffers/).
 
-Overview
---------
+## About Protocol Buffers
 
 Protocol Buffers (a.k.a., protobuf) are Google's language-neutral,
 platform-neutral, extensible mechanism for serializing structured data. You
@@ -16,70 +14,36 @@ This README file contains protobuf installation instructions. To install
 protobuf, you need to install the protocol compiler (used to compile .proto
 files) and the protobuf runtime for your chosen programming language.
 
-Protocol Compiler Installation
-------------------------------
+## Building and Installation
+
+### KasperskyOS
+
+For a default build and use, you need to install the KasperskyOS Community Edition SDK on your system. The latest version of the SDK can be downloaded from this [link](https://os.kaspersky.com/development/). The Abseil source code has been checked on the KasperskyOS Community Edition SDK version 1.1.0.
+
+### Protocol Compiler Installation
 
 The protocol compiler is written in C++. If you are using C++, please follow
 the [C++ Installation Instructions](src/README.md) to install protoc along
 with the C++ runtime.
 
-For non-C++ users, the simplest way to install the protocol compiler is to
-download a pre-built binary from our release page:
+### Protobuf Runtime Installation
 
-  [https://github.com/protocolbuffers/protobuf/releases](https://github.com/protocolbuffers/protobuf/releases)
+Only C++ language is adopted for KasperskyOS. You can find instructions about
+how to install protobuf runtime for C++ in [src](src).
 
-In the downloads section of each release, you can find pre-built binaries in
-zip packages: protoc-$VERSION-$PLATFORM.zip. It contains the protoc binary
-as well as a set of standard .proto files distributed along with protobuf.
+### Quick Start
 
-If you are looking for an old version that is not available in the release
-page, check out the maven repo here:
-
-  [https://repo1.maven.org/maven2/com/google/protobuf/protoc/](https://repo1.maven.org/maven2/com/google/protobuf/protoc/)
-
-These pre-built binaries are only provided for released versions. If you want
-to use the github master version at HEAD, or you need to modify protobuf code,
-or you are using C++, it's recommended to build your own protoc binary from
-source.
-
-If you would like to build protoc binary from source, see the [C++ Installation
-Instructions](src/README.md).
-
-Protobuf Runtime Installation
------------------------------
-
-Protobuf supports several different programming languages. For each programming
-language, you can find instructions in the corresponding source directory about
-how to install protobuf runtime for that specific language:
-
-| Language                             | Source                                                      |
-|--------------------------------------|-------------------------------------------------------------|
-| C++ (include C++ runtime and protoc) | [src](src)                                                  |
-| Java                                 | [java](java)                                                |
-| Python                               | [python](python)                                            |
-| Objective-C                          | [objectivec](objectivec)                                    |
-| C#                                   | [csharp](csharp)                                            |
-| JavaScript                           | [js](js)                                                    |
-| Ruby                                 | [ruby](ruby)                                                |
-| Go                                   | [protocolbuffers/protobuf-go](https://github.com/protocolbuffers/protobuf-go)|
-| PHP                                  | [php](php)                                                  |
-| Dart                                 | [dart-lang/protobuf](https://github.com/dart-lang/protobuf) |
-
-Quick Start
------------
-
-The best way to learn how to use protobuf is to follow the tutorials in our
-developer guide:
-
-https://developers.google.com/protocol-buffers/docs/tutorials
+The best way to learn how to use protobuf is to follow the tutorials in [developer guide](https://developers.google.com/protocol-buffers/docs/tutorials).
 
 If you want to learn from code examples, take a look at the examples in the
 [examples](examples) directory.
 
-Documentation
--------------
+## Contributing
 
-The complete documentation for Protocol Buffers is available via the
-web at:
+Please see the [Contributing](CONTRIBUTING.md) page for generic info.
 
-https://developers.google.com/protocol-buffers/
+We'll follow the parent project contributing rules but would consider to accept only KasperskyOS-specific changes, so for that it is advised to use pull-requests.
+
+## License
+
+The c-ares library is licensed under the terms of the 3-Clause BSD License. See [LICENSE](LICENSE) for more information.
