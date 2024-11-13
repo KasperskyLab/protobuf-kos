@@ -1,3 +1,6 @@
+# © 2024 AO Kaspersky Lab
+# Licensed under the 3-Clause BSD License
+
 if (NOT EXISTS "${PROJECT_SOURCE_DIR}/../third_party/googletest/CMakeLists.txt")
   message(FATAL_ERROR
           "Cannot find third_party/googletest directory that's needed to "
@@ -13,6 +16,7 @@ mark_as_advanced(protobuf_ABSOLUTE_TEST_PLUGIN_PATH)
 
 set(googlemock_source_dir "${protobuf_source_dir}/third_party/googletest/googlemock")
 set(googletest_source_dir "${protobuf_source_dir}/third_party/googletest/googletest")
+
 include_directories(
   ${googlemock_source_dir}
   ${googletest_source_dir}
@@ -206,7 +210,15 @@ set(tests_files
   ${protobuf_source_dir}/src/google/protobuf/wire_format_unittest.inc
 )
 
-if(protobuf_ABSOLUTE_TEST_PLUGIN_PATH)
+set(lite_test_files
+  ${protobuf_source_dir}/src/google/protobuf/lite_unittest.cc
+)
+
+set(lite_arena_test_files
+  ${protobuf_source_dir}/src/google/protobuf/lite_arena_unittest.cc
+)
+
+if(NOT KOS AND protobuf_ABSOLUTE_TEST_PLUGIN_PATH)
   add_compile_options(-DGOOGLE_PROTOBUF_TEST_PLUGIN_PATH="$<TARGET_FILE:test_plugin>")
 endif()
 
@@ -218,7 +230,6 @@ if(MINGW)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,16777216")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
   endif()
-
 endif()
 
 add_executable(tests ${tests_files} ${common_test_files} ${tests_proto_files} ${lite_test_proto_files})
@@ -234,19 +245,25 @@ set(test_plugin_files
 add_executable(test_plugin ${test_plugin_files})
 target_link_libraries(test_plugin libprotoc libprotobuf gmock)
 
-set(lite_test_files
-  ${protobuf_source_dir}/src/google/protobuf/lite_unittest.cc
-)
 add_executable(lite-test ${lite_test_files} ${common_lite_test_files} ${lite_test_proto_files})
 target_link_libraries(lite-test libprotobuf-lite gmock_main)
 
-set(lite_arena_test_files
-  ${protobuf_source_dir}/src/google/protobuf/lite_arena_unittest.cc
-)
 add_executable(lite-arena-test ${lite_arena_test_files} ${common_lite_test_files} ${lite_test_proto_files})
 target_link_libraries(lite-arena-test libprotobuf-lite gmock_main)
 
-add_custom_target(check
-  COMMAND tests
-  DEPENDS tests test_plugin
-  WORKING_DIRECTORY ${protobuf_source_dir})
+if(KOS)
+  include(kos/tests.cmake)
+  foreach (TEST tests lite-test lite-arena-test)
+    target_compile_definitions(${TEST} PRIVATE GOOGLE_PROTOBUF_TEST_SOURCE_PATH="/kl_test_results/src")
+    kos_gtest(${TEST}
+      WITH_NETWORK
+      FILES_TO_COPY "${protobuf_source_dir}/src:/"
+    )
+  endforeach()
+else()
+  add_custom_target(check
+    COMMAND tests
+    DEPENDS tests test_plugin
+    WORKING_DIRECTORY ${protobuf_source_dir}
+  )
+endif()

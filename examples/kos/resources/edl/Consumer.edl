@@ -1,0 +1,11 @@
+/*
+ * © 2024 AO Kaspersky Lab
+ * Licensed under the 3-Clause BSD License
+ */
+
+task class example.Consumer
+
+endpoints
+{
+    consumer: example.IConsumer
+}

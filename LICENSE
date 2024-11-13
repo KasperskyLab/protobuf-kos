@@ -1,3 +1,11 @@
+Protobuf-kos is an adapted version of the Protocol Buffers project for use on KasperskyOS.
+
+This software is derived from Protocol Buffers and is licensed under the 3-Clause BSD License.
+
+© 2024 AO Kaspersky Lab.
+
+# Protocol Buffers license
+
 Copyright 2008 Google Inc.  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

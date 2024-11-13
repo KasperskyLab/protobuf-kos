@@ -1,0 +1,77 @@
+/*
+ * © 2024 AO Kaspersky Lab
+ * Licensed under the 3-Clause BSD License
+ */
+
+/* Description of a solution security policy. */
+
+/* Assign the execute interface. */
+execute: kl.core.Execute
+
+/* Include the base.psl file containing a formal description
+ * of the Base security model. */
+use nk.base._
+
+/* Include EDL files. */
+use EDL Einit
+use EDL kl.core.Core
+use EDL example.Consumer
+use EDL example.Producer
+@INIT_EXTERNAL_ENTITIES@
+
+/* Allows the KasperskyOS kernel to start itself and the Einit class process. */
+execute src = kl.core.Core
+{
+    match dst = kl.core.Core            { grant () }
+    match dst = Einit                   { grant () }
+}
+
+/* An Einit class process is allowed to start a process of the
+ * example.Consumer and example.Producer classes. */
+execute src = Einit
+{
+    match dst = example.Consumer        { grant () }
+    match dst = example.Producer        { grant () }
+}
+
+/* A client of the Einit class is allowed to query the KasperskyOS kernel. */
+request src = Einit
+{
+    match dst = kl.core.Core            { grant () }
+}
+
+/* A client of the example.Producer class is allowed to query a server
+ * of the kl.core.Core, kl.VfsSdCardFs, kl.bc.BlobContainer,
+ * and example.Consumer classes. */
+request src = example.Producer
+{
+    match dst = kl.core.Core            { grant () }
+    match dst = kl.VfsSdCardFs          { grant () }
+    match dst = kl.bc.BlobContainer     { grant () }
+    match dst = example.Consumer        { grant () }
+}
+
+/* A client of the example.Consumer class is allowed to query a server
+ * of the kl.core.Core and kl.bc.BlobContainer classes. */
+request src = example.Consumer
+{
+    match dst = kl.core.Core            { grant () }
+    match dst = kl.bc.BlobContainer     { grant () }
+}
+
+/* A client of the kl.bc.BlobContainer class is allowed to query a server
+ * of the kl.core.Core and kl.VfsSdCardFs classes. */
+request src = kl.bc.BlobContainer
+{
+    match dst = kl.core.Core            { grant () }
+    match dst = kl.VfsSdCardFs          { grant () }
+}
+
+/* Any server and the KasperskyOS kernel are allowed to respond to
+ * queries of any client. */
+response                                { grant () }
+
+/* Any server and the KasperskyOS kernel are allowed to notify
+ * any client regarding errors that occur when the client queries
+ * the server or the KasperskyOS kernel by calling any method. */
+error                                   { grant () }
