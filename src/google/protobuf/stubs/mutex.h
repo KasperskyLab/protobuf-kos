@@ -27,8 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// © 2022 AO Kaspersky Lab. All Rights Reserved
-//
+// © 2024 AO Kaspersky Lab
+// Licensed under the 3-Clause BSD License
+
 
 #ifndef GOOGLE_PROTOBUF_STUBS_MUTEX_H_
 #define GOOGLE_PROTOBUF_STUBS_MUTEX_H_
@@ -121,7 +122,7 @@ class CallOnceInitializedMutex {
 // mutexes.
 class GOOGLE_PROTOBUF_CAPABILITY("mutex") PROTOBUF_EXPORT WrappedMutex {
  public:
-#if defined(__QNX__) || defined(__KOS__) // 03.11.2022 adapted for KasperskyOS
+#if defined(__QNX__) || defined(__KOS__)
   constexpr WrappedMutex() = default;
 #else
   constexpr WrappedMutex() {}

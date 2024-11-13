@@ -1,0 +1,38 @@
+{
+    "addressBook": [
+        {
+            "name": "White Rabbit",
+            "email": "jump@rabbithole.com",
+            "phones": [
+                {
+                    "number": "8-801-587-5002",
+                    "type": "Mobile"
+                }
+            ]
+        },
+        {
+            "name": " Santa Claus",
+            "email": "ho-ho-ho@far-north.com",
+            "phones": [
+                {
+                    "number": "8-123-456-7890",
+                    "type": "Home"
+                }
+            ]
+        },
+        {
+            "name": "Boogie Man",
+            "email": "me@your-fear.com",
+            "phones": [
+                {
+                    "number": "8-800-123-4567",
+                    "type": "Work"
+                },
+                {
+                    "number": "8-001-987-5432",
+                    "type": "Mobile"
+                }
+            ]
+        }
+    ]
+}

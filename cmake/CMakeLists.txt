@@ -1,3 +1,6 @@
+# © 2024 AO Kaspersky Lab
+# Licensed under the 3-Clause BSD License
+
 # Minimum CMake required
 cmake_minimum_required(VERSION 3.1.3)
 
@@ -19,9 +22,14 @@ endif()
 if(POLICY CMP0091)
   cmake_policy(SET CMP0091 NEW)
 endif()
+# On KasperskyOS toolchain use IN LIST.
+if(POLICY CMP0057)
+  cmake_policy(SET CMP0057 NEW)
+endif()
 
 # Project
 project(protobuf C CXX)
+
 
 # Add c++11 flags
 if (CYGWIN)
@@ -66,6 +74,12 @@ set(protobuf_DEBUG_POSTFIX "d"
 mark_as_advanced(protobuf_DEBUG_POSTFIX)
 # User options
 include(protobuf-options.cmake)
+
+if(KOS AND protobuf_BUILD_TESTS)
+    # Initialize CMake library for the KasperskyOS SDK.
+    include (platform)
+    initialize_platform (FORCE_STATIC)
+endif(KOS AND protobuf_BUILD_TESTS)
 
 # Overrides for option dependencies
 if (protobuf_BUILD_PROTOC_BINARIES OR protobuf_BUILD_TESTS)

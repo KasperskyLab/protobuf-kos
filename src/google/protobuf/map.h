@@ -27,6 +27,9 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+// © 2024 AO Kaspersky Lab
+// Licensed under the 3-Clause BSD License
 
 // This file defines the map container and its helpers to support protobuf maps.
 //
@@ -52,6 +55,10 @@
 
 #if !defined(GOOGLE_PROTOBUF_NO_RDTSC) && defined(__APPLE__)
 #include <mach/mach_time.h>
+#endif
+
+#if !defined(GOOGLE_PROTOBUF_NO_RDTSC) && defined(__KOS__)
+#include <hal/arm64/cputicks.h>
 #endif
 
 #include <google/protobuf/stubs/common.h>
@@ -1094,12 +1101,17 @@ class Map {
       asm volatile("rdtsc" : "=a"(lo), "=d"(hi));
       s += ((static_cast<uint64_t>(hi) << 32) | lo);
 #elif defined(__aarch64__) && defined(__GNUC__)
+#ifdef __KOS__
+    uint64_t virtual_timer_value = HalGetCpuTicksRelaxed();
+    s += virtual_timer_value;
+#else
       // There is no rdtsc on ARMv8. CNTVCT_EL0 is the virtual counter of the
       // system timer. It runs at a different frequency than the CPU's, but is
       // the best source of time-based entropy we get.
       uint64_t virtual_timer_value;
       asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
       s += virtual_timer_value;
+#endif
 #endif
 #endif  // !defined(GOOGLE_PROTOBUF_NO_RDTSC)
       return s;

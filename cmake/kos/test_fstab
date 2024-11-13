@@ -1,0 +1,5 @@
+# © 2024 AO Kaspersky Lab
+# Licensed under the 3-Clause BSD License
+
+devfs /dev devfs 0
+romfs /etc romfs ro

@@ -27,8 +27,11 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+//
 // Author: kenton@google.com (Kenton Varda)
+//
+// © 2024 AO Kaspersky Lab
+// Licensed under the 3-Clause BSD License
 
 #include <google/protobuf/compiler/subprocess.h>
 
@@ -60,7 +63,31 @@ char* portable_strdup(const char* s) {
   }
   return ns;
 }
+
+#ifdef __KOS__
+/* fork(), execv(), execvp() are not implemented in KasperskyOS
+ * so we need to define them to compile code that use them
+ */
+pid_t fork()
+{
+  std::cerr << "WARNING: fork() is not supported by KasperskyOS\n";
+  return -1;
+}
+
+int execv(const char *, char *const*)
+{
+  std::cerr << "WARNING: execv() is not supported by KasperskyOS\n";
+  return -1;
+}
+
+int execvp(const char *, char *const* )
+{
+  std::cerr << "WARNING: execvp() is not supported by KasperskyOS\n";
+  return -1;
+}
+#endif
 }  // namespace
+
 
 #ifdef _WIN32
 
