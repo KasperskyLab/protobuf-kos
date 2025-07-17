@@ -1,4 +1,4 @@
-# © 2024 AO Kaspersky Lab
+# © 2025 AO Kaspersky Lab
 # Licensed under the 3-Clause BSD License
 
 project(einit)
@@ -8,7 +8,7 @@ include(platform/image)
 include(${KL_SDK_ROOT_PATH}/common/build-sd-image.cmake)
 
 # Set the linker and compiler flags.
-project_header_default("STANDARD_GNU_11:YES" "STRICT_WARNINGS:NO")
+project_header_default("STANDARD_GNU_17:YES" "STRICT_WARNINGS:NO")
 
 # Define an ENTITIES variable with a list of programs.
 set(ENTITIES
@@ -62,6 +62,16 @@ build_kos_qemu_image(kos-qemu-image
   IMAGE_FILES ${ENTITIES}
 )
 
+# Radxa Rock 3a uses mmc1 instead default mmc0 for VfsSdCardFs.
+# Change ROOTFS only for hardware -- before build_kos_hw_image. QEMU uses mmc0.
+if(CMAKE_SYSTEM_SOC STREQUAL "RK3568")
+  set_target_properties (${precompiled_vfsVfsSdCardFs}
+    PROPERTIES
+      EXTRA_ENV "\
+      ROOTFS: mmc1,0 / fat32 0
+      VFS_FILESYSTEM_BACKEND: server:kl.VfsSdCardFs")
+endif()
+
 # Create a top-level CMake target named kos-image which can be used
 # when building a solution image to be started on the hardware platform.
 build_kos_hw_image(kos-image
@@ -74,11 +84,10 @@ build_kos_hw_image(kos-image
   IMAGE_FILES ${ENTITIES}
 )
 
-add_dependencies(kos-image copylibs_hw)
+add_dependencies(kos-image copylibs_hw disk_image_fs)
 
 # Create a top-level CMake target named sd-image which can be used
 # when building an SD card image to be started on the hardware platform.
-set(BOARD RPI4_BCM2711)
 build_sd_image(sd-image
   KOS_IMAGE_TARGET kos-image
   IMAGE_FS ${IMAGE_FS}

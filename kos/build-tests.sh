@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# © 2024 AO Kaspersky Lab
+# © 2025 AO Kaspersky Lab
 # Licensed under the 3-Clause BSD License
 
 if [ -z "${SDK_PREFIX}" ];then
@@ -47,9 +47,29 @@ export CMAKE_PID=
 export ALL_TESTS=
 export TESTS=
 
+# Output last child in chain with beginning on PID in $1.
+# Works only with one child per process.
+function GetLastChild() {
+    local PID=$1;
+    local CHILD_PID;
+    while CHILD_PID=$(pgrep -P ${PID}); do
+        PID=${CHILD_PID};
+    done;
+    echo ${PID}
+}
+
+# $1 - cmake which runs QEMU.
 function KillQemu() {
-    PID_TO_KILL=$(pgrep qemu-system.*)
-    kill $PID_TO_KILL 2>/dev/null
+    local PID_TO_KILL;
+    if [ ! -z "$1" ]; then
+        PID_TO_KILL=$(GetLastChild $1);
+    elif [ ! -z "${CMAKE_PID}" ]; then
+        PID_TO_KILL=$(GetLastChild ${CMAKE_PID});
+    fi
+
+    if [ ! -z "${PID_TO_KILL}" ]; then
+        kill $PID_TO_KILL 2>/dev/null
+    fi
 }
 
 function PrintHelp () {
@@ -69,11 +89,11 @@ OPTIONS:
 -t, --timeout {sec}              Time, in seconds, allotted to start and execute a single test case. Default value is 300 seconds.
 -o, --out {directory}            Path where the results of the test run will be stored. If not specified, the results will be stored in the ${TEST_LOGS_DIR} directory.
 -j, --jobs {jobs number}         Number of jobs for parallel build. Default value obtained from the nproc command is used.
--f, --filter {filter expression} Expression to filter tests using google tests filter expression syntax. 
+-f, --filter {filter expression} Expression to filter tests using google tests filter expression syntax.
 HELP
 }
 
-function ParsArguments {
+function ParseArguments {
     while [ -n "${1}" ]; do
         case "${1}" in
         -h | --help) PrintHelp
@@ -167,6 +187,26 @@ function SetupEnvironment () {
     [ -e "${FAILED_TESTS}" ] && rm "${FAILED_TESTS}"
 }
 
+# $1 - cmake which runs QEMU.
+# $2 - file where test writes.
+function MonitorTest() {
+    local CMAKE_PID=$1;
+    local TEST_LOG=$2;
+
+    tail -F -n +1 --pid="${CMAKE_PID}" "${TEST_LOG}" 2>/dev/null \
+    | while IFS= read -t ${TEST_TIMEOUT} -r STR; do
+        echo ${STR} >&2;
+        if [[ ${STR} == *"ALL-KTEST-FINISHED"* ]]; then
+            echo "SUCCESS";
+            return;
+        elif [[ ${STR} == *"FAILED TEST"* ]]; then
+            break;
+        fi
+    done;
+
+    echo "FAIL";
+}
+
 function RunTests {
     # Run all specified tests.
     for TEST in ${TESTS}; do
@@ -178,22 +218,18 @@ function RunTests {
         "cmake" --build ${BUILD} --target ${TEST_TARGET} -j ${JOBS} &> ${TEST_LOG} &
         CMAKE_PID=`echo $!`
 
-        FAILED=YES
-        tail -F -n +1 --pid="${CMAKE_PID}" "${TEST_LOG}" 2>/dev/null \
-        | while IFS= read -t ${TEST_TIMEOUT} -r STR; do
-            echo ${STR}
-            if [[ ${STR} == *"ALL-KTEST-FINISHED"* ]]; then
-                FAILED=NO
-                break;
-            elif [[ ${STR} == *"FAILED TEST"* ]]; then
-                echo "  ${TEST}" >> "${FAILED_TESTS}"
-                break;
-            fi
-        done;
-        KillQemu
+        TEST_RESULT=$(MonitorTest ${CMAKE_PID} ${TEST_LOG});
+
+        if kill -0 ${CMAKE_PID} && ps ${CMAKE_PID} | grep cmake; then
+            KillQemu ${CMAKE_PID}
+        fi
+
+        if [[ "${TEST_RESULT}" == "FAIL" ]]; then
+            echo "  ${TEST}" >> "${FAILED_TESTS}"
+        fi
 
         # Cleanup.
-        [[ "${FAILED}" == NO ]] && rm -rf "${GENERATED_DIR}/*_${TEST}" "build_tests/${TEST}*"
+        [[ "${TEST_RESULT}" == "SUCCESS" ]] && rm -rf "${GENERATED_DIR}/*_${TEST}" "build_tests/${TEST}*"
     done
 }
 
@@ -209,8 +245,8 @@ function PrintResult {
 }
 
 # Main.
-trap KillQemu 0 1 2 3 13 15
-ParsArguments $@
+trap "KillQemu ${CMAKE_PID}" 0 1 2 3 13 15
+ParseArguments "$@"
 GetTests
 SetupEnvironment
 RunTests

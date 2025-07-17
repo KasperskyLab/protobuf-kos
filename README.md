@@ -8,7 +8,7 @@ Protocol Buffers are Google's language-neutral, platform-neutral, extensible mec
 For more information, see the [Protocol Buffers Documentation](https://developers.google.com/protocol-buffers/).
 
 For additional details on KasperskyOS, including its limitations and known issues, please refer to the
-[KasperskyOS Community Edition Online Help](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.2&customization=KCE_community_edition).
+[KasperskyOS Community Edition Online Help](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.3&customization=KCE&helpid=community_edition).
 
 ## Table of contents
 - [Protocol Buffers for KasperskyOS](#protocol-buffers-for-kasperskyos)
@@ -28,10 +28,10 @@ For additional details on KasperskyOS, including its limitations and known issue
 
 ### Prerequisites
 
-1. [Install](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.2&customization=KCE_sdk_install_and_remove)
+1. [Install](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.3&customization=KCE&helpid=sdk_install_and_remove)
 KasperskyOS Community Edition SDK. You can download the latest version of the KasperskyOS Community Edition for free from
-[os.kaspersky.com](https://os.kaspersky.com/development/). The minimum required version of KasperskyOS Community Edition SDK is 1.2.
-For more information, see [System requirements](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.2&customization=KCE_system_requirements).
+[os.kaspersky.com](https://os.kaspersky.com/development/). The minimum required version of KasperskyOS Community Edition SDK is 1.3.
+For more information, see [System requirements](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.3&customization=KCE&helpid=system_requirements).
 1. Copy source files to your project directory.
 
 ### Building and installing
@@ -68,7 +68,7 @@ For example:
 $ ./host-build.sh
 ```
 
-[⬆ Back to Top](#Table-of-contents)
+[⬆ Back to Top](#table-of-contents)
 
 #### Protobuf C++ runtime
 
@@ -93,7 +93,7 @@ and the build path is set to `./build/kos`. To change this, edit the `cross-buil
 For CMake build system to find the protobuf libraries, make sure that the directory where the libraries were installed
 is listed in the environment variable `CMAKE_FIND_ROOT_PATH`.
 
-[⬆ Back to Top](#Table-of-contents)
+[⬆ Back to Top](#table-of-contents)
 
 #### Tests
 
@@ -151,12 +151,12 @@ If not specified, all tests will be executed.
 
 The CMake files for building the tests are located in the `./cmake/kos` directory.
 
-[⬆ Back to Top](#Table-of-contents)
+[⬆ Back to Top](#table-of-contents)
 
 ## Usage
 
 When you develop a KasperskyOS-based solution, use the
-[recommended structure of project directories](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.2&customization=KCE_cmake_using_sdk_cmake)
+[recommended structure of project directories](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.3&customization=KCE&helpid=cmake_using_sdk_cmake)
 to simplify usage of CMake scripts.
 
 The `cross-build.sh` script builds only runtime libraries.
@@ -171,7 +171,31 @@ For more on using the previously built protobuf on KasperskyOS, see the [README.
 
 Registered trademarks and endpoint marks are the property of their respective owners.
 
-GoogleTest, Protobuf are a trademark of Google LLC.
+AIX, IBM, PowerPC, z/OS are trademarks of International Business Machines Corporation, registered in many jurisdictions worldwide.
+
+Android, Closure, GoogleTest, Dart, Protobuf are a trademark of Google LLC.
+
+Apple, Cocoa, Finder, macOS, Mac OS, Xcode, OS X, Objective-C, Safari, TrueType are trademarks of Apple Inc.
+
+Intel, Core are trademarks of Intel Corporation or its subsidiaries.
+
+Fedora is a registered trademark of Red Hat, Inc. or its subsidiaries in the United States and other countries.
+
+FreeBSD is a registered trademark of The FreeBSD Foundation.
+
+gRPC is a registered trademark of The Linux Foundation in the United States and other countries.
+
+Juniper Networks and JUNOS are trademarks or registered trademarks of Juniper Networks, Inc. in the United States and other countries
+
+Linux is the registered trademark of Linus Torvalds in the U.S. and other countries.
+
+MS-DOS, Win32, Windows, Windows Phone, Silverlight, Visual Studio are trademarks of the Microsoft group of companies.
+
+Solaris is a registered trademarks of Oracle and/or its affiliates.
+
+Python is a trademark or registered trademark of the Python Software Foundation.
+
+IOS is a registered trademark of Cisco Systems, Inc. and/or its affiliates in the United States and certain other countries.
 
 Raspberry Pi is a trademark of the Raspberry Pi Foundation.
 
@@ -183,6 +207,6 @@ Only KasperskyOS-specific changes can be approved. See [CONTRIBUTING.md](CONTRIB
 
 This project is licensed under the terms of the 3-Clause BSD License. See [LICENSE](LICENSE) for more information.
 
-[⬆ Back to Top](#Table-of-contents)
+[⬆ Back to Top](#table-of-contents)
 
-© 2024 AO Kaspersky Lab
+© 2025 AO Kaspersky Lab
