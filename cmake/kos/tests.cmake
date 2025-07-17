@@ -103,7 +103,6 @@ function(kos_gtest TEST_TARGET)
   )
 
   target_compile_options(${TEST_TARGET} PRIVATE
-    -Wno-subobject-linkage
     -Wno-deprecated-declarations
   )
 
