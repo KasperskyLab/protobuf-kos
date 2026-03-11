@@ -1,0 +1,104 @@
+© 2026 AO Kaspersky Lab
+This script is licensed under the MIT License
+
+---
+ CMakeLists.txt                             |  3 +++
+ cmake/abseil-cpp.cmake                     | 10 ++++++++-
+ cmake/dependencies.cmake                   |  8 ++++++-
+ src/google/protobuf/compiler/subprocess.cc | 26 ++++++++++++++++++++++
+ 4 files changed, 45 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ae3c3246..130f1476 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -160,6 +160,9 @@ find_package(Threads REQUIRED)
+ 
+ set(_protobuf_FIND_ZLIB)
+ if (protobuf_WITH_ZLIB)
++  if(KOS)
++    set(ZLIB_USE_STATIC_LIBS ON)
++  endif()
+   find_package(ZLIB)
+   if (ZLIB_FOUND)
+     set(HAVE_ZLIB 1)
+diff --git a/cmake/abseil-cpp.cmake b/cmake/abseil-cpp.cmake
+index 29d5044a..facc5fb2 100644
+--- a/cmake/abseil-cpp.cmake
++++ b/cmake/abseil-cpp.cmake
+@@ -21,10 +21,18 @@ if (NOT TARGET absl::strings)
+     include(${protobuf_SOURCE_DIR}/cmake/dependencies.cmake)
+     message(STATUS "Fallback to downloading Abseil ${abseil-cpp-version} from GitHub")
+ 
++    if (ABSL_REPOSITORY)
++      set(ABSL_REPOSITORY ${ABSL_REPOSITORY})
++    elseif (KOS)
++      set(ABSL_REPOSITORY https://github.com/KasperskyLab/abseil-cpp-kos.git)
++    else()
++      set(ABSL_REPOSITORY https://github.com/abseil/abseil-cpp.git)
++    endif()
++
+     include(FetchContent)
+     FetchContent_Declare(
+       absl
+-      GIT_REPOSITORY "https://github.com/abseil/abseil-cpp.git"
++      GIT_REPOSITORY "${ABSL_REPOSITORY}"
+       GIT_TAG "${abseil-cpp-version}"
+     )
+     if (protobuf_INSTALL)
+diff --git a/cmake/dependencies.cmake b/cmake/dependencies.cmake
+index 6681c7a3..9352ceca 100644
+--- a/cmake/dependencies.cmake
++++ b/cmake/dependencies.cmake
+@@ -12,7 +12,13 @@ endif()
+ 
+ set(rules_apple-version "3.13.0")
+ set(apple_support-version "1.15.1")
+-set(abseil-cpp-version "20250127.0")
++if (ABSL_CPP_VERSION)
++  set(abseil-cpp-version "${ABSL_CPP_VERSION}")
++elseif (KOS)
++  set(abseil-cpp-version "kosce_v1.4.0")
++else()
++  set(abseil-cpp-version "20250127.0")
++endif()
+ set(rules_cc-version "0.0.17")
+ set(zlib-version "1.3.1.bcr.5")
+ set(bazel_features-version "1.23.0")
+diff --git a/src/google/protobuf/compiler/subprocess.cc b/src/google/protobuf/compiler/subprocess.cc
+index e505ddb6..4fd8580d 100644
+--- a/src/google/protobuf/compiler/subprocess.cc
++++ b/src/google/protobuf/compiler/subprocess.cc
+@@ -32,6 +32,32 @@ namespace google {
+ namespace protobuf {
+ namespace compiler {
+ 
++namespace {
++
++#ifdef __KOS__
++/* fork(), execv(), execvp() are not implemented in KasperskyOS
++ * so we need to define them to compile code that use them
++ */
++pid_t fork()
++{
++  std::cerr << "WARNING: fork() is not supported in KasperskyOS\n";
++  return -1;
++}
++
++int execv(const char *, char *const*)
++{
++  std::cerr << "WARNING: execv() is not supported in KasperskyOS\n";
++  return -1;
++}
++
++int execvp(const char *, char *const* )
++{
++  std::cerr << "WARNING: execvp() is not supported in KasperskyOS\n";
++  return -1;
++}
++#endif
++}  // namespace
++
+ #ifdef _WIN32
+ 
+ static void CloseHandleOrDie(HANDLE handle) {
