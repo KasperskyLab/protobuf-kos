@@ -10,7 +10,7 @@ serializing structured data. For more information, see the
 [Protocol Buffers Documentation](https://developers.google.com/protocol-buffers/).
 
 For additional details on KasperskyOS, including its limitations and known issues, please refer to
-the [KasperskyOS Community Edition Online Help](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.4&customization=KCE&helpid=community_edition).
+the [KasperskyOS Community Edition Online Help](https://kas.pr/ee46).
 
 ## Table of contents
 - [KasperskyOS adaptation patch for Protocol Buffers](#kasperskyos-adaptation-patch-for-protocol-buffers)
@@ -30,11 +30,11 @@ the [KasperskyOS Community Edition Online Help](https://click.kaspersky.com/?hl=
 ### Prerequisites
 
 1. Confirm that your host system meets all the
-[System requirements](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.4&customization=KCE&helpid=system_requirements)
+[System requirements](https://kas.pr/3wfh)
 listed in the KasperskyOS Community Edition Developer's Guide.
-1. [Install](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.4&customization=KCE&helpid=sdk_install_and_remove)
+1. [Install](https://kas.pr/7kve)
 the KasperskyOS Community Edition SDK version 1.4. You can download it for free from
-[os.kaspersky.com](https://os.kaspersky.com/development/).
+[os.kaspersky.com](https://kas.pr/1tng).
 1. Copy the source files of this adaptation patch to your local project directory.
 1. Source the SDK setup script to configure the build environment. This exports the `KOSCEDIR`
   environment variable, which points to the SDK installation directory:
@@ -47,7 +47,7 @@ the KasperskyOS Community Edition SDK version 1.4. You can download it for free 
 The build of protobuf for KasperskyOS is implemented through a cross-compilation process. Protobuf
 for KasperskyOS is built using the CMake build system, which is provided in the KasperskyOS
 Community Edition SDK. When you develop a KasperskyOS-based solution, use the
-[recommended structure of project directories](https://click.kaspersky.com/?hl=en-us&link=online_help&pid=kos&version=1.4&customization=KCE&helpid=cmake_using_sdk_cmake)
+[recommended structure of project directories](https://kas.pr/58ow)
 to simplify the use of CMake scripts.
 
 To build and install protobuf for KasperskyOS, you need to install the protobuf compiler (`protoc`)
@@ -69,7 +69,7 @@ cmake --build build/host -j`nproc` --target install
 ```
 
 Set `CMAKE_INSTALL_PREFIX` to your preferred installation path. For compatibility with the
-[protobuf example](https://github.com/KasperskyLab/kos-ce-extra/tree/master/examples/protobuf), we
+[protobuf example](https://kas.pr/egw3), we
 recommend setting the `CMAKE_INSTALL_PREFIX` to
 `~/.local/share/kos/$(basename $KOSCEDIR)/toolchain`.
 
@@ -84,7 +84,7 @@ cmake --build build/kos -j`nproc` --target install
 ```
 
 Set `CMAKE_INSTALL_PREFIX` to your preferred installation path. For compatibility with the
-[protobuf example](https://github.com/KasperskyLab/kos-ce-extra/tree/master/examples/protobuf), we
+[protobuf example](https://kas.pr/egw3), we
 recommend setting the `CMAKE_INSTALL_PREFIX` to
 `~/.local/share/kos/$(basename $KOSCEDIR)/sysroot-aarch64-kos`.
 
@@ -102,7 +102,7 @@ find_program(protoc NAMES protoc REQUIRED)
 To integrate the KasperskyOS-adapted protobuf into your solution, first build and install both the
 [protobuf compiler](#protobuf-compiler) and the [protobuf C++ runtime](#protobuf-c-runtime) into the
 directory defined by the `CMAKE_INSTALL_PREFIX` variable. For a practical implementation, refer to
-the [protobuf example](https://github.com/KasperskyLab/kos-ce-extra/tree/master/examples/protobuf)
+the [protobuf example](https://kas.pr/egw3)
 in the `KasperskyLab/kos-ce-extra` repository, which demonstrates this exact workflow.
 
 ## Trademarks
